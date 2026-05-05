@@ -1,0 +1,7 @@
+{
+  "name": "Auro",
+  "description": "A high-performance study browser and workspace designed for classes, research, and exam prep with built-in AI focus tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["Auro Gen1 AI Engine", "Neural Study Assistant", "Pomodoro Focus", "Subject-based Tab Groups"]
+}
+

@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Entity Validation Helpers ---
+    
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'createdAt']) &&
+             data.email is string && data.email.size() <= 256 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidNote(data) {
+      return data.keys().hasAll(['content', 'userId', 'createdAt']) &&
+             data.userId == request.auth.uid &&
+             data.content is string && data.content.size() <= 5000 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidTodo(data) {
+      return data.keys().hasAll(['task', 'completed', 'userId', 'createdAt']) &&
+             data.userId == request.auth.uid &&
+             data.task is string && data.task.size() <= 500 &&
+             data.completed is bool &&
+             data.createdAt == request.time;
+    }
+
+    function isValidVocab(data) {
+      return data.keys().hasAll(['word', 'definition', 'userId', 'createdAt']) &&
+             data.userId == request.auth.uid &&
+             data.word is string && data.word.size() <= 100 &&
+             data.definition is string && data.definition.size() <= 1000 &&
+             data.createdAt == request.time;
+    }
+
+    // --- Collection Rules ---
+
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && 
+                      incoming().diff(existing()).affectedKeys().hasOnly(['lastLogin', 'displayName', 'photoURL']);
+    }
+
+    match /notes/{noteId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidNote(incoming()) && isValidId(noteId);
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid &&
+                      incoming().userId == request.auth.uid &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['content', 'title', 'color', 'updatedAt']) &&
+                      incoming().updatedAt == request.time;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /todos/{todoId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidTodo(incoming()) && isValidId(todoId);
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid &&
+                      incoming().userId == request.auth.uid &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['completed', 'task']);
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /vocab/{vocabId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidVocab(incoming()) && isValidId(vocabId);
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid &&
+                      incoming().userId == request.auth.uid &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['word', 'definition', 'subject']);
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account and profile information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastLogin": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "Note": {
+      "title": "Study Note",
+      "description": "A student note captured during research",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "color": { "type": "string" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["content", "userId", "createdAt"]
+    },
+    "Todo": {
+      "title": "Task",
+      "description": "A study task or homework item",
+      "type": "object",
+      "properties": {
+        "task": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["task", "completed", "userId", "createdAt"]
+    },
+    "Vocabulary": {
+      "title": "Vocabulary Word",
+      "description": "A word and its definition for study",
+      "type": "object",
+      "properties": {
+        "word": { "type": "string" },
+        "definition": { "type": "string" },
+        "subject": { "type": "string" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["word", "definition", "userId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Store user profile meta"
+    },
+    "/notes/{noteId}": {
+      "schema": "Note",
+      "description": "Store user notes"
+    },
+    "/todos/{todoId}": {
+      "schema": "Todo",
+      "description": "Store user tasks"
+    },
+    "/vocab/{vocabId}": {
+      "schema": "Vocabulary",
+      "description": "Store vocabulary words"
+    }
+  }
+}

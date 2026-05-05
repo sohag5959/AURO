@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;700&family=JetBrains+Mono&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* User Provided Brand Colors */
+  --color-auro-prime: #3126B1;
+  --color-auro-bg: #F8FAFC;
+  --color-auro-dark: #1E293B;
+  
+  /* Advanced Variable System */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* UI Spacing & Radius from Spec */
+  --spacing-search-height: 52px;
+  --radius-search: 26px;
+  --radius-xs: 0.1rem;
+  --radius-s: 0.2rem;
+  --radius-m: 0.4rem;
+  --radius-l: 0.6rem;
+  --radius-xl: 0.8rem;
+  --radius-xxl: 1.2rem;
+}
+
+:root {
+    --color-page-background: #F8FAFC;
+    --color-text-primary: #17191E;
+    --color-text-secondary: #46464A;
+    --gradient-hero: linear-gradient(179.2deg, #FF5601 0%, #FF1F01 100%);
+    --gradient-primary-gradient: linear-gradient(179.2deg, #434FCF 0%, #3126B1 100%);
+}
+
+body {
+  background-color: var(--color-page-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss03" on;
+  text-rendering: optimizeLegibility;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Glass & Elevation */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.elevation-02 {
+    box-shadow: 0px 4px 6px -1px rgba(33, 39, 42, 0.1), 0px 2px 4px -2px rgba(33, 39, 42, 0.1);
+}
+
+/* Browser Specific UI */
+.search-bar-shadow {
+    box-shadow: 0 2px 5px 1px rgba(64,60,67,.16);
+}
+
+.tab-active-border {
+    position: relative;
+}
+
+.tab-active-border::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gradient-primary-gradient);
+}
+
